@@ -1,10 +1,13 @@
 import React from 'react';
+//a function that takes a component as an argument and returns a modified component; 
+import {withRouter} from 'react-router-dom'
 
 import './menu-item.styles.scss'
 
-const MenuItem = ({ title, imageUrl, size }) => (
+const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
     //className will be equal with size, witch is a state property fort the last 2 objects
-  <div className={`${size} menu-item`}>
+    //history match basic navigation setup
+  <div className={`${size} menu-item`} onClick={()=> history.push(`${match.url}${linkUrl}`)}>
     <div
       className='background-image'
       style={{
@@ -18,6 +21,6 @@ const MenuItem = ({ title, imageUrl, size }) => (
   </div>
 )
 
-export default MenuItem;
+export default withRouter(MenuItem);
 
 
