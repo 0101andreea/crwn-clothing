@@ -9,3 +9,7 @@ a{
   text-decoration: nome;
   color:black
 }
+
+*{
+  box-sizing: border-box;
+}
