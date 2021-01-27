@@ -1,5 +1,6 @@
 import React from 'react';
 import {Switch, Route} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import './App.css';
 
@@ -9,16 +10,13 @@ import Header from './components/header/header.component'
 import SignInAndSignUpPage from './pages/sig-in-and-sign-up/sig-in-and-sign-up.component'
 
 import {auth, createUserProfileDocument} from './firebase/firebase.utils'
+import { setCurrentUser} from './redux/user/user.actions'
 
 class App extends React.Component {
-  constructor(){
-    super()
-    this.state = {
-      currentUser:null
-    }
-  }
 
   componentDidMount(){
+
+    const { setCurrentUser } = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       //if a user sign in, check if is signed in
       //is is signed  and the is a document profile, in will get the userRef from profile document from the userAuth object
@@ -30,20 +28,19 @@ class App extends React.Component {
         //check if DB is updated at that ref with new data
 
         userRef.onSnapshot(snapShot => {
+          setCurrentUser({
           //get the data related to the user that is stored to our DB
-         this.setState({
-           currentUser: {
+        
              id: snapShot.id,
              ...snapShot.data()
-           }
-         })
-         console.log(this.state)
-        })
-     
-      }
-    
-    })
-  }
+         
+            });
+          });
+        }
+  
+        setCurrentUser(userAuth);
+      });
+    }
 
   componentWillUnmount(){
     this.unsubscribeFromAuth()
@@ -52,7 +49,7 @@ class App extends React.Component {
   render(){
   return (
     <div>
-    <Header currentUser = {this.state.currentUser} />
+    <Header />
       <Switch>
         <Route exact path='/' component={HomePage} />
         <Route path='/shop' component={ShopPage} />
@@ -63,4 +60,12 @@ class App extends React.Component {
 }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  //whatever object will pass to dispatch it will be an action object that will pass to every reducer
+  //invoking the current user with the user that will return the payload from user.actions : dispatching the props
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+
+
+})
+
+export default connect(null, mapDispatchToProps ) (App);
