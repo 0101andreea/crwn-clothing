@@ -3,10 +3,12 @@
 import {combineReducers} from 'redux'
 
 import userReducer from './user/user.reducer'
+import cartReducer from './cart/cart.reducer'
 
 
 export default combineReducers({
     //create the root reducer
     //the actual key users 
-    user:userReducer
+    user:userReducer,
+    cart: cartReducer
 })
